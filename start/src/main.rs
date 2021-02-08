@@ -1,42 +1,30 @@
-use std::{env, io};
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
+use std::{env, io, fs};
 
+fn main() {
+    let args = env::args().collect::<Vec<String>>();
+    let var = &args[1];
+    if var.contains('-'){
+        let num_1 :String = var.split('-').collect();
+        let num_1 = num_1.parse().unwrap();
+        for args in env::args().skip(2) {
+            prnt_lines(args, num_1).unwrap();
+        }
+    }
+    else {
+        let num_1 = 10;
+        for args in env::args().skip(1) {
+            prnt_lines(args,num_1).unwrap();
+        }
+    }
+}
 
-fn main() -> io::Result<()> {
-    for filename in env::args().skip(1) {
-        let i = 0;
-        for char in filename.chars().clone() {
-            if char.clone() == '-' {
-                let num_1 = getnum(&filename);
-                let num_1 = num_1.parse().unwrap();
-                for filename in env::args().skip(2) {
-                    let file = File::open(&filename)?;
-                    let reader = BufReader::new(file);
-                    for line in reader.lines().filter_map(|result| result.ok()) {
-                        let i = i + 1;
-                        while i < num_1 {
-                            println!("{}", line);
-                        }
-                    }
-                }
-            }
-            else {
-                let file = File::open(&filename)?;
-                let reader = BufReader::new(file);
-                for line in reader.lines().filter_map(|result| result.ok()) {
-                    let i = i + 1;
-                    while i <= 10 {
-                        println!("{}", line);
-                    }
-                }
-            }
+fn prnt_lines(p: String,  mut this_line: usize) -> io::Result<()> {
+    let file_contents  = fs::read_to_string(p).unwrap();
+    while this_line != 0{
+        for single_lin in file_contents.lines() {
+            this_line -= 1;
+            println!("{}", single_lin);
         }
     }
     Ok(())
-}
-
-fn getnum(s: &String) -> String{
-    let num = s.chars().skip(1).collect();
-    return num
 }
