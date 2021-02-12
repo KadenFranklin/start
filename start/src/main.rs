@@ -18,12 +18,14 @@ fn main() {
     }
 }
 
-fn prnt_lines(p: String,  mut this_line: usize) -> io::Result<()> {
+fn prnt_lines(p: String, this_line: usize) -> io::Result<()> {
     let file_contents  = fs::read_to_string(p).unwrap();
-    while this_line != 0{
-        for single_lin in file_contents.lines() {
-            this_line -= 1;
-            println!("{}", single_lin);
+    let mut count = 0;
+    for single_lin in file_contents.lines() {
+        count = count + 1;
+        println!("{}", single_lin);
+        if  count >= this_line {
+            break;
         }
     }
     Ok(())
